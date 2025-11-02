@@ -16,7 +16,8 @@ export default StyleSheet.create({
   },
   subtitle: {
     marginBottom: 30,
-    textAlign: 'center',
+    textAlign: 'center', 
+    
   },
   button: {
     borderRadius: 30,

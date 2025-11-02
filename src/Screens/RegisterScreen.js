@@ -5,11 +5,43 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CustomButton from '../Components/CustomButton';
 import globalStyles, { colors } from '../Styles/GlobalStyles';
 import styles from '../Styles/RegisterStyles';
+import axios from 'axios';
+
 
 export default function RegisterScreen({ navigation }) {
-  const [nombre, setNombre] = useState('');
+  const [Username, setUsermame] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const API_URL = 'http://192.168.1.6:1337/api/auth/local/register'; // reemplaza con tu IP
+
+
+  const handleRegister = async () => {
+  if (!Username || !email || !password) {
+    alert('Por favor completa todos los campos');
+    return;
+  }
+
+  try {
+    const response = await axios.post(API_URL, {
+      username: Username,
+      email: email,
+      password: password,
+    });
+
+    console.log('Usuario registrado:', response.data);
+    alert('Registro exitoso');
+    navigation.navigate('Login');
+
+  } catch (error) {
+    console.log('Error al registrar:', error.response?.data || error.message);
+    alert(
+      error.response?.data?.error?.message ||
+      'Error al registrarse. Verifica tus datos o la conexión.'
+    );
+  }
+};
+
 
   return (
     <View style={[globalStyles.container, globalStyles.centered]}>
@@ -21,9 +53,9 @@ export default function RegisterScreen({ navigation }) {
 
       <View style={styles.formContainer}>
         <TextInput
-          label="Nombre"
-          value={nombre}
-          onChangeText={setNombre}
+          label="Username"
+          value={Username}
+          onChangeText={setUsermame}
           mode="outlined"
           left={<TextInput.Icon icon="account" />}
           style={styles.input}
@@ -31,7 +63,7 @@ export default function RegisterScreen({ navigation }) {
         />
 
         <TextInput
-          label="Correo electrónico"
+          label="email"
           value={email}
           onChangeText={setEmail}
           mode="outlined"
@@ -53,8 +85,9 @@ export default function RegisterScreen({ navigation }) {
       </View>
 
       <CustomButton
+        icon='account-plus'
         title="Registrarse"
-        onPress={() => navigation.navigate('Home')}
+        onPress={handleRegister}
       />
 
       <CustomButton

@@ -1,12 +1,12 @@
 import { StyleSheet } from 'react-native';
 
 export const colors = {
-  primary: '#1DA1F2',
-  background: '#FFFFFF',
-  text: '#000000',
-  gray: '#AAB8C2',
-  lightGray: '#E1E8ED',
-  darkGray: '#657786',
+   primary: '#f4a261',      // naranja suave y cálido (color principal)
+  background: '#fff5eb',   // fondo crema claro, da buena lectura
+  text: '#3d3d3d',         // texto gris oscuro (sin llegar a negro)
+  gray: '#bcbcbc',         // gris medio para bordes o placeholders
+  lightGray: '#e0e0e0',    // gris claro para fondos secundarios
+  darkGray: '#5a5a5a',     // gris oscuro para títulos o subtítulos
 };
 
 export const spacing = {

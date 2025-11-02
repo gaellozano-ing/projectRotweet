@@ -3,7 +3,7 @@ import { Button } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import { colors } from '../Styles/GlobalStyles';
 
-export default function CustomButton({ title, mode = 'contained', onPress, style, icon }) {
+export default function CustomButton({ title, mode = 'contained', onPress, style, icon, disabled }) {
   return (
     <Button
       mode={mode}
@@ -13,6 +13,8 @@ export default function CustomButton({ title, mode = 'contained', onPress, style
       buttonColor={mode === 'contained' ? colors.primary : undefined}
       textColor={mode === 'text' ? colors.primary : '#fff'}
       contentStyle={styles.content}
+      disabled={disabled}
+
     >
       {title}
     </Button>
