@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from "react";
-import { View,TextInput, Alert } from "react-native";
+import { View,TextInput, Alert, TouchableOpacity } from "react-native";
 import { Text,Button } from "react-native-paper";
 import axios from "axios";
 import globalStyles, { colors } from "../Styles/GlobalStyles";
