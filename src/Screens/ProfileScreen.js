@@ -23,7 +23,7 @@ const ProfileScreen = ({ navigation }) => {
           return;
         }
 
-        // ✅ 1️⃣ Obtener el usuario autenticado con su perfil poblado
+        // Obtener el usuario autenticado con su perfil poblado
         const userRes = await axios.get(
           `${API_URL}/api/users/me?populate[profile][populate][avatar]=*`,
           {
@@ -41,7 +41,7 @@ const ProfileScreen = ({ navigation }) => {
           return;
         }
 
-        // ✅ 2️⃣ Construir el objeto con la información
+        // Construir el objeto con la información
         setProfile({
           name: profileData.name, //perfil name
           username: `${user.username}`, // username del user

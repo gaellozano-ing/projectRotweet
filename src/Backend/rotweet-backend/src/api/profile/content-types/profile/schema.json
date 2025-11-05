@@ -51,6 +51,12 @@
       "relation": "oneToMany",
       "target": "api::post.post",
       "mappedBy": "profile"
+    },
+    "likedPosts": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::post.post",
+      "mappedBy": "likedBy"
     }
   }
 }

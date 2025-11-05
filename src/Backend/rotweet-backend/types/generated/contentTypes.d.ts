@@ -449,6 +449,7 @@ export interface ApiPostPost extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    likedBy: Schema.Attribute.Relation<'manyToMany', 'api::profile.profile'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::post.post'> &
       Schema.Attribute.Private;
@@ -478,6 +479,7 @@ export interface ApiProfileProfile extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     followers: Schema.Attribute.Relation<'manyToMany', 'api::profile.profile'>;
     followings: Schema.Attribute.Relation<'manyToMany', 'api::profile.profile'>;
+    likedPosts: Schema.Attribute.Relation<'manyToMany', 'api::post.post'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',

@@ -30,6 +30,12 @@
       "relation": "manyToOne",
       "target": "api::profile.profile",
       "inversedBy": "posts"
+    },
+    "likedBy": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::profile.profile",
+      "inversedBy": "likedPosts"
     }
   }
 }
