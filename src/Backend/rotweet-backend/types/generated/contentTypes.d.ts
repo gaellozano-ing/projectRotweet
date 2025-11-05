@@ -486,6 +486,7 @@ export interface ApiProfileProfile extends Struct.CollectionTypeSchema {
       'api::profile.profile'
     > &
       Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
     posts: Schema.Attribute.Relation<'oneToMany', 'api::post.post'>;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
@@ -495,7 +496,6 @@ export interface ApiProfileProfile extends Struct.CollectionTypeSchema {
       'oneToOne',
       'plugin::users-permissions.user'
     >;
-    username: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 

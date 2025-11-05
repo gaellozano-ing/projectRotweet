@@ -1,69 +1,117 @@
-import React, { useState } from 'react';
-import { View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Alert } from 'react-native';
 import { TextInput, Text } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialDesignIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CustomButton from '../Components/CustomButton';
 import globalStyles, { colors } from '../Styles/GlobalStyles';
 import styles from '../Styles/RegisterStyles';
 import axios from 'axios';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function RegisterScreen({ navigation }) {
-  const [Username, setUsermame] = useState('');
+  const [Username, setUsername] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [formValid, setFormValid] = useState(false);
 
-  const API_URL = 'http://192.168.1.6:1337/api/auth/local/register'; // reemplaza con tu IP
+  const API_URL = 'http://192.168.1.8:1337'; 
 
+  useEffect(()=>{
+     const isValid = Username.trim() !== '' && password.trim() !== '' && email.trim() !='' && password.trim() != '';
+    setFormValid(isValid);
+  }, [Username, password, email, password]);
+
+ 
 
   const handleRegister = async () => {
-  if (!Username || !email || !password) {
-    alert('Por favor completa todos los campos');
+  if (!Username || !name || !email || !password) {
+    Alert.alert('Incomplete fields', 'Please complete all fields.');
+    return;
+  } else if (password.trim().length < 8) {
+    Alert.alert('Invalid password', 'The password must be at least 8 characters long.');
     return;
   }
 
-  try {
-    const response = await axios.post(API_URL, {
-      username: Username,
-      email: email,
-      password: password,
-    });
+    try {
+      // Registrar el usuario en Strapi
+      const registerRes = await axios.post(`${API_URL}/api/auth/local/register`, {
+        username: Username,
+        email: email,
+        password: password,
+      });
 
-    console.log('Usuario registrado:', response.data);
-    alert('Registro exitoso');
-    navigation.navigate('Login');
+      console.log('✅ Usuario registrado:', registerRes.data);
 
-  } catch (error) {
-    console.log('Error al registrar:', error.response?.data || error.message);
-    alert(
-      error.response?.data?.error?.message ||
-      'Error al registrarse. Verifica tus datos o la conexión.'
-    );
-  }
-};
+      const { jwt, user } = registerRes.data;
 
+      //  Guardar el token localmente
+      await AsyncStorage.setItem('jwt', jwt);
+
+      // Crear el perfil asociado directamente al usuario autenticado
+      const profileRes = await axios.post(
+        `${API_URL}/api/profiles`,
+        {
+          data: {
+            name: name,
+            bio: '',
+            user: user.id, //  Asociamos el perfil con el usuario directamente
+          },
+        },
+        {
+          headers: { Authorization: `Bearer ${jwt}` },
+        }
+      );
+
+      console.log('Profile created and associated:', profileRes.data);
+
+      Alert.alert('Successful', `Welcome ${name} (${Username})`);
+      navigation.navigate('Login');
+    } catch (error) {
+      console.log('Error registering:', error.response?.data || error.message);
+      Alert.alert(
+        'Error registering:',
+        error.response?.data?.error?.message ||
+          'An error occurred. Please check your details or your connection.'
+      );
+    }
+  };
 
   return (
     <View style={[globalStyles.container, globalStyles.centered]}>
-      <Icon name="twitter" size={80} color={colors.primary} style={styles.icon} />
+      <MaterialDesignIcons name="twitter" size={80} color={colors.primary} style={styles.icon} />
 
       <Text variant="headlineMedium" style={[styles.title, globalStyles.titleText]}>
-        Crear cuenta
+        Create account
       </Text>
 
       <View style={styles.formContainer}>
+
+        {/* Full Name */}
         <TextInput
-          label="Username"
-          value={Username}
-          onChangeText={setUsermame}
+          label="Full Name"
+          value={name}
+          onChangeText={setName}
           mode="outlined"
-          left={<TextInput.Icon icon="account" />}
+          left={<TextInput.Icon icon="account-outline" />}
           style={styles.input}
           theme={{ roundness: 12 }}
         />
 
+        {/* Username */}
         <TextInput
-          label="email"
+          label="Username"
+          value={Username}
+          onChangeText={setUsername}
+          mode="outlined"
+          left={<TextInput.Icon icon="at" />}
+          style={styles.input}
+          theme={{ roundness: 12 }}
+        />
+
+        {/* Email */}
+        <TextInput
+          label="Email"
           value={email}
           onChangeText={setEmail}
           mode="outlined"
@@ -72,8 +120,9 @@ export default function RegisterScreen({ navigation }) {
           theme={{ roundness: 12 }}
         />
 
+        {/* Password */}
         <TextInput
-          label="Contraseña"
+          label="Password"
           value={password}
           onChangeText={setPassword}
           mode="outlined"
@@ -84,14 +133,10 @@ export default function RegisterScreen({ navigation }) {
         />
       </View>
 
-      <CustomButton
-        icon='account-plus'
-        title="Registrarse"
-        onPress={handleRegister}
-      />
+      <CustomButton icon="account-plus" title="Register" onPress={handleRegister} disabled={!formValid}/>
 
       <CustomButton
-        title="¿Ya tienes cuenta? Iniciar sesión"
+        title="Already have an account? Log in"
         mode="text"
         onPress={() => navigation.navigate('Login')}
       />
