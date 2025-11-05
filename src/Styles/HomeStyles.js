@@ -1,11 +1,12 @@
 import { StyleSheet } from 'react-native';
+import { colors, spacing, fontSizes } from './GlobalStyles';
 
 export default StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: colors.background,
     padding: 20,
   },
   icon: {
@@ -13,13 +14,17 @@ export default StyleSheet.create({
   },
   title: {
     marginBottom: 10,
+    fontSize: fontSizes.title,
+    color: colors.darkGray,
+    textAlign: 'center',
   },
   subtitle: {
     marginBottom: 30,
-    textAlign: 'center', 
-    
+    textAlign: 'center',
+    color: colors.darkGray,
   },
   button: {
     borderRadius: 30,
+    marginTop: spacing.md,
   },
 });

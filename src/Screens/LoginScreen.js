@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Alert, Image } from 'react-native';
 import { TextInput, Text } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CustomButton from '../Components/CustomButton';
 import globalStyles, { colors } from '../Styles/GlobalStyles';
 import styles from '../Styles/LoginStyles';
@@ -24,7 +23,7 @@ const handleSave = async () => {
   }
 
   try {
-    const response = await axios.post('http://192.168.1.9:1337/api/auth/local', {
+    const response = await axios.post('http://192.168.1.8:1337/api/auth/local', {
       identifier: User, // puede ser username o email según config de Strapi
       password: Password,
     });

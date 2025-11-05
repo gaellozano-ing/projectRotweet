@@ -6,9 +6,9 @@ export default StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    marginBottom: 30,
+    marginBottom: 20,
     fontWeight: 'bold',
-    color: colors.textPrimary,
+    color: colors.primary,
   },
   formContainer: {
     width: '85%',
@@ -16,6 +16,6 @@ export default StyleSheet.create({
   },
   input: {
     marginBottom: 15,
-    backgroundColor: '#fff',
+    backgroundColor: colors.lightGray,
   },
 });
