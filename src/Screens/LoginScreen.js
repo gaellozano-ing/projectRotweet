@@ -44,7 +44,7 @@ const handleSave = async () => {
   return (
     <View style={[globalStyles.container, globalStyles.centered]}>
        <Image
-        source={require('../assets/img/RotweetLogo.png')}
+        source={require('../assets/img/RotTweetLogo.png')}
         style={{ width: 120, height: 120, margin: 10}}
         resizeMode="contain"
       />

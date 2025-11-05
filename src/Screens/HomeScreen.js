@@ -1,55 +1,90 @@
-import React from 'react';
-import { View , FlatList } from 'react-native';
-import { Text, Button } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import styles from '../Styles/HomeStyles';
-import globalStyles, { colors } from '../Styles/GlobalStyles';
-import TweetCard from '../Screens/TweetCard';
-import { useState } from 'react';
-import tweetCardStyles from '../Styles/TweetCardStyles';
+import React, { useEffect, useState } from "react";
+import { View, FlatList, RefreshControl, Image } from "react-native";
+import { Text } from "react-native-paper";
+import axios from "axios";
+import TweetCard from "../Screens/TweetCard";
+import CustomButton from "../Components/CustomButton";
+import globalStyles from "../Styles/GlobalStyles";
+import HomeStyles from "../Styles/HomeStyles";
+import TweetCardStyles from "../Styles/TweetCardStyles";
 
+const FeedScreen = ({ navigation }) => {
+  const [posts, setPosts] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
-const HomeScreen = () => {
-    const [tweets, setTweets] = useState([
-    {
-      id: '1',
-      user: 'Gael',
-      handle: '@gaelrotom',
-      content: 'Mi primer tweet en RoTweet!',
-      time: '2h',
-    },
-    {
-      id: '2',
-      user: 'Rotom',
-      handle: '@rotom_ai',
-      content: 'Analizando la red social...',
-      time: '3h',
-    },
-  ]);
-     return (
-     <View style={[globalStyles.container, styles.feedContainer]}>
-      <Icon
-        name="twitter"
-        size={40}
-        color={colors.primary}
-        style={{ alignSelf: 'center', marginBottom: 10 }}
+  const API_URL = "http://192.168.1.6:1337/api/posts?sort=createdAt:desc";
+
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.get(API_URL);
+      const postData = response.data.data || response.data;
+      setPosts(postData);
+    } catch (error) {
+      console.error("❌ Error fetching posts:", error.response?.data || error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchPosts();
+    setRefreshing(false);
+  };
+
+  const renderItem = ({ item }) => {
+    const content = item.attributes?.content || item.content || "Sin contenido";
+    const createdAt = item.attributes?.createdAt || item.createdAt || new Date().toISOString();
+
+    return (
+      <TweetCard
+        username="Anonymous"
+        content={content}
+        createdAt={createdAt}
       />
+    );
+  };
 
+  return (
+    <View style={globalStyles.container}>
+
+      {/* Header con logo y texto */}
+      <View style={HomeStyles.headerContainer}>
+        <Image
+          source={require('../assets/img/RotTweetLogo.png')}
+          style={HomeStyles.logo}
+          resizeMode="contain"
+        />
+        <Text style={HomeStyles.headerText}>Inicio</Text>
+      </View>
+
+      {/* Lista de posts */}
       <FlatList
-        data={tweets}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <TweetCard tweet={item} />}
-        ListHeaderComponent={
-          <Text style={[globalStyles.titleText, styles.headerText]}>
-            Inicio
+        data={posts}
+        keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
+        renderItem={renderItem}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        ItemSeparatorComponent={() => <View style={TweetCardStyles.separator} />}
+        ListEmptyComponent={
+          <Text style={{ textAlign: "center", marginTop: 20 }}>
+            No posts yet 😔
           </Text>
         }
-        
-        ItemSeparatorComponent={() =>  <View style={tweetCardStyles.separator} /> }
         showsVerticalScrollIndicator={false}
+      />
+
+      {/* Botón flotante tipo bolita */}
+      <CustomButton
+        icon="feather"
+        onPress={() => navigation.navigate("CreatePost")}
+        style={HomeStyles.floatingButton}
       />
     </View>
   );
 };
 
-export default HomeScreen;
+export default FeedScreen;

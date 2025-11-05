@@ -1,30 +1,32 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    padding: 20,
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: "#ddd",
   },
-  icon: {
-    marginBottom: 20,
+  logo: {
+    width: 40,
+    height: 50,
+    marginRight: 10,
   },
-  title: {
-    marginBottom: 10,
+  headerText: {
+    fontSize: 22,
+    fontWeight: "bold",
   },
-  subtitle: {
-    marginBottom: 30,
-    textAlign: 'center', 
-    
-  },
-  button: {
+  floatingButton: {
+    position: "absolute",
+    bottom: 25,
+    right: 25,
+    width: 60,
+    height: 60,
     borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 6,
   },
-  feedContainer: {
-  flex: 1,
-  marginTop: 10,
-},
-
 });

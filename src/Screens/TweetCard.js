@@ -1,39 +1,44 @@
 import React from 'react';
-import { View } from 'react-native';
-import { Avatar, Text, Card } from 'react-native-paper';
+import { View, Image } from 'react-native';
+import { Card, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import tweetCardStyles from '../Styles/TweetCardStyles';
 
-const TweetCard = ({
-  avatarUri = null,
-  name = 'RotomFan',
-  username = '@rotom',
-  content = 'This is a sample RoTweet ⚡',
-}) => {
+const TweetCard = ({ username, content, createdAt, avatar }) => {
+  const formattedDate = createdAt
+    ? new Date(createdAt).toLocaleDateString('es-ES', {
+        day: 'numeric',
+        month: 'short',
+      })
+    : '';
+
   return (
     <Card style={tweetCardStyles.card}>
       <Card.Content style={tweetCardStyles.contentRow}>
-       <Avatar.Image
-        size={48}
-          source={
-          avatarUri
-          ?  { uri: avatarUri }
-        : undefined // Sin imagen por ahora
-  }
-/>
+        {/* Avatar */}
+        {avatar ? (
+          <Image source={{ uri: avatar }} style={{ width: 48, height: 48, borderRadius: 24 }} />
+        ) : (
+          <View
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 24,
+              backgroundColor: '#ccc',
+            }}
+          />
+        )}
 
+        {/* Texto */}
         <View style={tweetCardStyles.textContainer}>
           <View style={tweetCardStyles.headerRow}>
-            <Text variant="titleMedium" style={tweetCardStyles.name}>
-              {name}
-            </Text>
-            <Text variant="bodySmall" style={tweetCardStyles.username}>
-              {username}
-            </Text>
+            <Text style={tweetCardStyles.name}>{username || 'Anónimo'}</Text>
+            <Text style={tweetCardStyles.username}>· {formattedDate}</Text>
           </View>
-          <Text variant="bodyMedium" style={tweetCardStyles.tweetText}>
-            {content}
-          </Text>
+
+          <Text style={tweetCardStyles.tweetText}>{content || 'Sin contenido'}</Text>
+
+          {/* Íconos */}
           <View style={tweetCardStyles.iconRow}>
             <Icon name="chat-outline" size={20} color="#657786" />
             <Icon name="repeat" size={20} color="#657786" />
