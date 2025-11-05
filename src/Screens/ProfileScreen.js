@@ -8,7 +8,7 @@ import { colors } from '../Styles/GlobalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const API_URL = 'http://192.168.1.8:1337'; // tu backend Strapi
+const API_URL = 'http://192.168.1.8:1337'; // backend
 
 const ProfileScreen = ({ navigation }) => {
   const [profile, setProfile] = useState(null);
@@ -23,7 +23,7 @@ const ProfileScreen = ({ navigation }) => {
           return;
         }
 
-        // Obtener el usuario autenticado con su perfil poblado
+        // el user autenticated
         const userRes = await axios.get(
           `${API_URL}/api/users/me?populate[profile][populate][avatar]=*`,
           {
@@ -32,7 +32,7 @@ const ProfileScreen = ({ navigation }) => {
         );
 
         const user = userRes.data;
-        console.log('👤 Usuario con perfil:', user);
+        console.log(' Usuario con perfil:', user);
 
         const profileData = user.profile; // el perfil asociado
 
@@ -41,9 +41,9 @@ const ProfileScreen = ({ navigation }) => {
           return;
         }
 
-        // Construir el objeto con la información
+        // 
         setProfile({
-          name: profileData.name, //perfil name
+          name: profileData.name, // nombre del perfil
           username: `${user.username}`, // username del user
           bio: profileData.bio || '',
           joinDate: new Date(user.createdAt).toLocaleDateString(),
@@ -53,7 +53,7 @@ const ProfileScreen = ({ navigation }) => {
             null,
         });
       } catch (error) {
-        console.log('❌ Error al obtener perfil:', error.response?.data || error.message);
+        console.log(' Error al obtener perfil:', error.response?.data || error.message);
       } finally {
         setLoading(false);
       }
@@ -117,7 +117,7 @@ const ProfileScreen = ({ navigation }) => {
           />
         </View>
 
-        
+      
         <Text style={styles.name}>{profile.name}</Text>
 
         
@@ -125,7 +125,7 @@ const ProfileScreen = ({ navigation }) => {
 
         <Text style={styles.bio}>{profile.bio}</Text>
         <Text style={styles.joinDate}>
-          <MaterialDesignIcons name="calendar-month" size={16} color={colors.darkGray} />{' Se unio en '}
+          <MaterialDesignIcons name="calendar-month" size={16} color={colors.darkGray} />{' joined in '}
           {profile.joinDate}
         </Text>
       </View>

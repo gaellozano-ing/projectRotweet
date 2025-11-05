@@ -8,11 +8,13 @@ import globalStyles from "../Styles/GlobalStyles";
 import HomeStyles from "../Styles/HomeStyles";
 import TweetCardStyles from "../Styles/TweetCardStyles";
 
+
+
 const FeedScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  const API_URL = "http://192.168.1.6:1337/api/posts?sort=createdAt:desc";
+  const API_URL = "http://192.168.1.8:1337/api/posts?sort=createdAt:desc";
 
   const fetchPosts = async () => {
     try {

@@ -5,6 +5,9 @@ import CustomButton from '../Components/CustomButton';
 import globalStyles, { colors } from '../Styles/GlobalStyles';
 import styles from '../Styles/LoginStyles';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+
+const API_URL = 'http://192.168.1.8:1337'; // tu backend Strapi
 
 export default function LoginScreen({ navigation }) {
   const [User, setUser] = useState('');
@@ -16,48 +19,54 @@ export default function LoginScreen({ navigation }) {
     setFormValid(isValid);
   }, [User, Password]);
 
-const handleSave = async () => {
-  if (!formValid) {
-    Alert.alert('Error', 'Por favor, complete todos los campos.', [{ text: 'OK' }]);
-    return;
-  }
+  const handleSave = async () => {
+    if (!formValid) {
+      Alert.alert('Error', 'Por favor, complete todos los campos.', [{ text: 'OK' }]);
+      return;
+    }
 
-  try {
-    const response = await axios.post('http://192.168.1.8:1337/api/auth/local', {
-      identifier: User, // puede ser username o email según config de Strapi
-      password: Password,
-    });
+    try {
+      
+      const response = await axios.post(`${API_URL}/api/auth/local`, {
+        identifier: User, 
+        password: Password,
+      });
 
-    const { jwt, user } = response.data;
+      const { jwt, user } = response.data;
 
-    Alert.alert('Bienvenido', `Hola ${user.username}!`);
-    console.log('Token:', jwt);
+      
+      await AsyncStorage.setItem('jwt', jwt);
+      await AsyncStorage.setItem('user', JSON.stringify(user));
 
-    navigation.navigate('Home', { user });
-  } catch (error) {
-    console.error(error);
-    Alert.alert('Error', 'Usuario o contraseña incorrectos.');
-  }
-};
+      Alert.alert('Bienvenido', `Hola ${user.username}!`);
+      console.log('✅ Token guardado:', jwt);
+
+      
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+    } catch (error) {
+      console.error('❌ Error al iniciar sesión:', error.response?.data || error.message);
+      Alert.alert(
+        'Error',
+        error.response?.data?.error?.message || 'Usuario o contraseña incorrectos.'
+      );
+    }
+  };
 
   return (
     <View style={[globalStyles.container, globalStyles.centered]}>
-       <Image
+      <Image
         source={require('../assets/img/RotTweetLogo.png')}
-        style={{ width: 120, height: 120, margin: 10}}
+        style={{ width: 120, height: 120, margin: 10 }}
         resizeMode="contain"
       />
-      
-      <Text
-        variant="headlineMedium"
-        style={[styles.title]}
-      >
+
+      <Text variant="headlineMedium" style={[styles.title]}>
         Welcome to RotWeet
       </Text>
-      <Text
-        variant="headlineMedium"
-        style={[styles.title, globalStyles.titleText]}
-      >
+      <Text variant="headlineMedium" style={[styles.title, globalStyles.titleText]}>
         Login
       </Text>
 
