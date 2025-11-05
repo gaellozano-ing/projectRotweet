@@ -50,7 +50,7 @@ const FeedScreen = ({ navigation }) => {
   return (
     <View style={globalStyles.container}>
 
-      {/* Header con logo y texto */}
+      
       <View style={HomeStyles.headerContainer}>
         <Image
           source={require('../assets/img/RotTweetLogo.png')}
@@ -60,7 +60,7 @@ const FeedScreen = ({ navigation }) => {
         <Text style={HomeStyles.headerText}>Inicio</Text>
       </View>
 
-      {/* Lista de posts */}
+     
       <FlatList
         data={posts}
         keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
@@ -77,7 +77,6 @@ const FeedScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
       />
 
-      {/* Botón flotante tipo bolita */}
       <CustomButton
         icon="feather"
         onPress={() => navigation.navigate("CreatePost")}

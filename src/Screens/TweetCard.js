@@ -15,7 +15,7 @@ const TweetCard = ({ username, content, createdAt, avatar }) => {
   return (
     <Card style={tweetCardStyles.card}>
       <Card.Content style={tweetCardStyles.contentRow}>
-        {/* Avatar */}
+    
         {avatar ? (
           <Image source={{ uri: avatar }} style={{ width: 48, height: 48, borderRadius: 24 }} />
         ) : (
@@ -29,7 +29,7 @@ const TweetCard = ({ username, content, createdAt, avatar }) => {
           />
         )}
 
-        {/* Texto */}
+      
         <View style={tweetCardStyles.textContainer}>
           <View style={tweetCardStyles.headerRow}>
             <Text style={tweetCardStyles.name}>{username || 'Anónimo'}</Text>
@@ -38,7 +38,7 @@ const TweetCard = ({ username, content, createdAt, avatar }) => {
 
           <Text style={tweetCardStyles.tweetText}>{content || 'Sin contenido'}</Text>
 
-          {/* Íconos */}
+         
           <View style={tweetCardStyles.iconRow}>
             <Icon name="chat-outline" size={20} color="#657786" />
             <Icon name="repeat" size={20} color="#657786" />
