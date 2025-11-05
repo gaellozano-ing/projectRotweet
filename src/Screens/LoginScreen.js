@@ -24,7 +24,7 @@ const handleSave = async () => {
   }
 
   try {
-    const response = await axios.post('http://192.168.1.9:1337/api/auth/local', {
+    const response = await axios.post('http://192.168.1.6:1337/api/auth/local', {
       identifier: User, // puede ser username o email según config de Strapi
       password: Password,
     });
@@ -44,7 +44,7 @@ const handleSave = async () => {
   return (
     <View style={[globalStyles.container, globalStyles.centered]}>
        <Image
-        source={require('../assets/img/gorjeo.png')}
+        source={require('../assets/img/RotTweetLogo.png')}
         style={{ width: 120, height: 120, margin: 10}}
         resizeMode="contain"
       />

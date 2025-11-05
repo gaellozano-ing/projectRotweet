@@ -1,28 +1,90 @@
-import React from 'react';
-import { View } from 'react-native';
-import { Text, Button } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import styles from '../Styles/HomeStyles';
-import globalStyles, { colors } from '../Styles/GlobalStyles';
+import React, { useEffect, useState } from "react";
+import { View, FlatList, RefreshControl, Image } from "react-native";
+import { Text } from "react-native-paper";
+import axios from "axios";
+import TweetCard from "../Screens/TweetCard";
+import CustomButton from "../Components/CustomButton";
+import globalStyles from "../Styles/GlobalStyles";
+import HomeStyles from "../Styles/HomeStyles";
+import TweetCardStyles from "../Styles/TweetCardStyles";
 
-export default function HomeScreen({ navigation }) {
+const FeedScreen = ({ navigation }) => {
+  const [posts, setPosts] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const API_URL = "http://192.168.1.6:1337/api/posts?sort=createdAt:desc";
+
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.get(API_URL);
+      const postData = response.data.data || response.data;
+      setPosts(postData);
+    } catch (error) {
+      console.error("❌ Error fetching posts:", error.response?.data || error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchPosts();
+    setRefreshing(false);
+  };
+
+  const renderItem = ({ item }) => {
+    const content = item.attributes?.content || item.content || "Sin contenido";
+    const createdAt = item.attributes?.createdAt || item.createdAt || new Date().toISOString();
+
+    return (
+      <TweetCard
+        username="Anonymous"
+        content={content}
+        createdAt={createdAt}
+      />
+    );
+  };
+
   return (
-    <View style={styles.container}>
-      <Icon name="twitter" size={60} color={colors.primary} style={styles.icon} />
-      <Text variant="headlineMedium" style={[styles.title, globalStyles.titleText]}>
-        ¡Bienvenido a X!
-      </Text>
-      <Text style={[styles.subtitle, globalStyles.paragraph]}>
-        Aquí verías tu feed, publicaciones y más.
-      </Text>
+    <View style={globalStyles.container}>
 
-      <Button
-        mode="outlined"
-        onPress={() => navigation.navigate('Login')}
-        style={[styles.button, globalStyles.roundedButton]}
-      >
-        Cerrar sesión
-      </Button>
+      {/* Header con logo y texto */}
+      <View style={HomeStyles.headerContainer}>
+        <Image
+          source={require('../assets/img/RotTweetLogo.png')}
+          style={HomeStyles.logo}
+          resizeMode="contain"
+        />
+        <Text style={HomeStyles.headerText}>Inicio</Text>
+      </View>
+
+      {/* Lista de posts */}
+      <FlatList
+        data={posts}
+        keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
+        renderItem={renderItem}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        ItemSeparatorComponent={() => <View style={TweetCardStyles.separator} />}
+        ListEmptyComponent={
+          <Text style={{ textAlign: "center", marginTop: 20 }}>
+            No posts yet 😔
+          </Text>
+        }
+        showsVerticalScrollIndicator={false}
+      />
+
+      {/* Botón flotante tipo bolita */}
+      <CustomButton
+        icon="feather"
+        onPress={() => navigation.navigate("CreatePost")}
+        style={HomeStyles.floatingButton}
+      />
     </View>
   );
-}
+};
+
+export default FeedScreen;

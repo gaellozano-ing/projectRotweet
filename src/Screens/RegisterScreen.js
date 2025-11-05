@@ -13,7 +13,7 @@ export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const API_URL = 'http://192.168.1.9:1337/api/auth/local/register'; // reemplaza con tu IP
+  const API_URL = 'http://192.168.1.6:1337/api/auth/local/register'; // reemplaza con tu IP
 
 
   const handleRegister = async () => {
