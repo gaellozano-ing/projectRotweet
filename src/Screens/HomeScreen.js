@@ -71,7 +71,7 @@ const FeedScreen = ({ navigation }) => {
         ItemSeparatorComponent={() => <View style={TweetCardStyles.separator} />}
         ListEmptyComponent={
           <Text style={{ textAlign: "center", marginTop: 20 }}>
-            No posts yet 😔
+            No posts yet 
           </Text>
         }
         showsVerticalScrollIndicator={false}
