@@ -41,7 +41,7 @@ export default function RegisterScreen({ navigation }) {
         password: password,
       });
 
-      console.log('✅ Usuario registrado:', registerRes.data);
+      console.log('Usuario registrado:', registerRes.data);
 
       const { jwt, user } = registerRes.data;
 

@@ -18,7 +18,7 @@ const CreatePostScreen = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://192.168.1.6:1337/api/posts", {
+      const response = await axios.post("http://192.168.1.8:1337/api/posts", {
         data: {
           content: content,
         },
