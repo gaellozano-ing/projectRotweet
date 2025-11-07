@@ -15,7 +15,7 @@ export default function RegisterScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const [formValid, setFormValid] = useState(false);
 
-  const API_URL = 'http://192.168.1.8:1337'; 
+  const API_URL = 'http://192.168.1.6:1337'; 
 
   useEffect(()=>{
      const isValid = Username.trim() !== '' && password.trim() !== '' && email.trim() !='' && password.trim() != '';

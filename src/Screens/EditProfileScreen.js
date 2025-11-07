@@ -9,7 +9,7 @@ import CustomButton from '../Components/CustomButton';
 import { colors } from '../Styles/GlobalStyles';
 import styles from '../Styles/EditProfileStyles';
 
-const API_URL = 'http://192.168.1.8:1337'; 
+const API_URL = 'http://192.168.1.6:1337'; 
 export default function EditProfileScreen({ navigation }) {
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
