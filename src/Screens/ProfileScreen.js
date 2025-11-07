@@ -81,7 +81,7 @@ const ProfileScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require('../assets/img/descarga.jpeg')}
+        source={require('../assets/img/fondoPerfil.jpeg')}
         style={styles.headerBackground}
       >
         <View style={styles.headerButtons}>
@@ -105,7 +105,7 @@ const ProfileScreen = ({ navigation }) => {
             source={
               profile.avatar
                 ? { uri: `${API_URL}${profile.avatar}` }
-                : require('../assets/img/descarga.jpeg')
+                : require('../assets/img/user.png')
             }
             style={styles.avatar}
           />
