@@ -13,7 +13,7 @@ const FeedScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
 
   const API_URL =
-  "http://192.168.1.6:1337/api/posts?populate[profile][populate][user]=true&populate[profile][populate][avatar]=true&sort=createdAt:desc";
+  "http://192.168.1.8:1337/api/posts?populate[profile][populate][user]=true&populate[profile][populate][avatar]=true&sort=createdAt:desc";
 
   const fetchPosts = async () => {
     try {

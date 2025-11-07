@@ -7,7 +7,7 @@ import styles from '../Styles/LoginStyles';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
-const API_URL = 'http://192.168.1.6:1337'; // tu backend Strapi
+const API_URL = 'http://192.168.1.8:1337'; // tu backend Strapi
 
 export default function LoginScreen({ navigation }) {
   const [User, setUser] = useState('');
@@ -21,7 +21,7 @@ export default function LoginScreen({ navigation }) {
 
   const handleSave = async () => {
     if (!formValid) {
-      Alert.alert('Error', 'Por favor, complete todos los campos.', [{ text: 'OK' }]);
+      Alert.alert('Error', 'Please complete all fields.', [{ text: 'OK' }]);
       return;
     }
 
@@ -38,8 +38,8 @@ export default function LoginScreen({ navigation }) {
       await AsyncStorage.setItem('jwt', jwt);
       await AsyncStorage.setItem('user', JSON.stringify(user));
 
-      Alert.alert('Bienvenido', `Hola ${user.username}!`);
-      console.log('✅ Token guardado:', jwt);
+      Alert.alert('Welcome', `Hola ${user.username}!`);
+      console.log('Token saved:', jwt);
 
       
       navigation.reset({
@@ -47,10 +47,10 @@ export default function LoginScreen({ navigation }) {
         routes: [{ name: 'Home' }],
       });
     } catch (error) {
-      console.error('❌ Error al iniciar sesión:', error.response?.data || error.message);
+      console.error('Login error:', error.response?.data || error.message);
       Alert.alert(
         'Error',
-        error.response?.data?.error?.message || 'Usuario o contraseña incorrectos.'
+        error.response?.data?.error?.message || 'Incorrect username or password.'
       );
     }
   };

@@ -30,7 +30,7 @@ const handlePost = async () => {
       }
 
       const response = await axios.post(
-        "http://192.168.1.6:1337/api/posts",
+        "http://192.168.1.8:1337/api/posts",
         {
           data: {
             content: content,
@@ -47,7 +47,7 @@ const handlePost = async () => {
       Alert.alert("Success", "Your post has been created successfully!");
       setContent("");
     } catch (error) {
-      console.error("❌ Error creating post:", error.response?.data || error.message);
+      console.error(" Error creating post:", error.response?.data || error.message);
       Alert.alert("Error", "There was a problem creating your post.");
     } finally {
       setLoading(false);

@@ -1,57 +1,59 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, Alert } from 'react-native';
 import { TextInput, Text } from 'react-native-paper';
-import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons';
 import { launchImageLibrary } from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import CustomButton from '../Components/CustomButton';
-import { colors } from '../Styles/GlobalStyles';
 import styles from '../Styles/EditProfileStyles';
 
-const API_URL = 'http://192.168.1.6:1337'; 
+const API_URL = 'http://192.168.1.8:1337';
+
 export default function EditProfileScreen({ navigation }) {
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
   const [avatar, setAvatar] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const token = await AsyncStorage.getItem('jwt');
-        if (!token) {
-          navigation.navigate('Login');
-          return;
-        }
-
-        const userRes = await axios.get(
-          `${API_URL}/api/users/me?populate=profile.avatar`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
-
-        const user = userRes.data;
-        const profile = user.profile;
-
-        if (profile) {
-          setName(profile.name || '');
-          setBio(profile.bio || '');
-          if (profile.avatar?.url) {
-            setAvatar(`${API_URL}${profile.avatar.url}`);
-          }
-        }
-      } catch (error) {
-        console.log(
-          ' Error cargando perfil:',
-          error.response?.data || error.message,
-        );
-      } finally {
-        setLoading(false);
+  // carga
+  const loadProfile = async () => {
+    try {
+      const token = await AsyncStorage.getItem('jwt');
+      if (!token) {
+        navigation.navigate('Login');
+        return;
       }
-    };
 
+      const userRes = await axios.get(
+        `${API_URL}/api/users/me?populate=profile.avatar`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      const user = userRes.data;
+      const profile = user.profile;
+
+      if (profile) {
+        setName(profile.name || '');
+        setBio(profile.bio || '');
+        if (profile.avatar?.url) {
+          setAvatar(`${API_URL}${profile.avatar.url}`);
+        } else {
+          setAvatar(null);
+        }
+      }
+    } catch (error) {
+      console.log(
+        'Error loading profile:',
+        error.response?.data || error.message,
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     loadProfile();
   }, []);
 
@@ -71,24 +73,33 @@ export default function EditProfileScreen({ navigation }) {
       const token = await AsyncStorage.getItem('jwt');
       if (!token) return;
 
-      // Obtener usuario autenticado con populate completo
+      //  user
       const userRes = await axios.get(
         `${API_URL}/api/users/me?populate=profile.avatar`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
+
       const user = userRes.data;
+      const profileId = user?.profile?.documentId; // documentid
+      if (!profileId) {
+        Alert.alert('Error', 'The user profile was not found.');
+        return;
+      }
 
       let uploadedImageId = null;
 
-      // Si se seleccionó una nueva imagen, subirla a Strapi
-      if (avatar && avatar.startsWith('file://')) {
+      // image
+      if (
+        avatar &&
+        (avatar.startsWith('file://') || avatar.startsWith('content://'))
+      ) {
         const formData = new FormData();
         formData.append('files', {
           uri: avatar,
-          type: 'image/jpeg',
           name: 'avatar.jpg',
+          type: 'image/jpeg',
         });
 
         const uploadRes = await axios.post(`${API_URL}/api/upload`, formData, {
@@ -101,9 +112,9 @@ export default function EditProfileScreen({ navigation }) {
         uploadedImageId = uploadRes.data[0].id;
       }
 
-      //  Actualizar el perfil (con el id del avatar si se subió)
+      // update
       await axios.put(
-        `${API_URL}/api/profiles/${user.profile.id}`,
+        `${API_URL}/api/profiles/${profileId}`,
         {
           data: {
             name,
@@ -116,17 +127,25 @@ export default function EditProfileScreen({ navigation }) {
         },
       );
 
+      // refresh
+      await loadProfile();
+
       Alert.alert(
-        '✅ Perfil actualizado',
-        'Los cambios se guardaron correctamente.',
+        'Updated profile',
+        'The changes were saved successfully.',
+        [
+          {
+            text: 'OK',
+            onPress: () => navigation.goBack(),
+          },
+        ],
       );
-      navigation.goBack();
     } catch (error) {
       console.log(
-        'Error actualizando perfil:',
+        'Error updating profile:',
         error.response?.data || error.message,
       );
-      Alert.alert('Error', 'No se pudo actualizar el perfil.');
+      Alert.alert('Error', 'The profile could not be updated.');
     }
   };
 
@@ -138,7 +157,7 @@ export default function EditProfileScreen({ navigation }) {
           { justifyContent: 'center', alignItems: 'center' },
         ]}
       >
-        <Text>Cargando...</Text>
+        <Text>Charging...</Text>
       </View>
     );
   }
@@ -147,9 +166,7 @@ export default function EditProfileScreen({ navigation }) {
     <View style={styles.container}>
       <View style={{ alignItems: 'center', marginVertical: 20 }}>
         <Image
-          source={
-            avatar ? { uri: avatar } : require('../assets/img/descarga.jpeg')
-          }
+          source={avatar ? { uri: avatar } : require('../assets/img/user.png')}
           style={{
             width: 100,
             height: 100,
@@ -157,11 +174,11 @@ export default function EditProfileScreen({ navigation }) {
             marginBottom: 10,
           }}
         />
-        <CustomButton title="Cambiar foto" onPress={pickImage} />
+        <CustomButton title="Change photo" onPress={pickImage} />
       </View>
 
       <TextInput
-        label="Nombre"
+        label="Name"
         value={name}
         onChangeText={setName}
         mode="outlined"
@@ -170,7 +187,7 @@ export default function EditProfileScreen({ navigation }) {
       />
 
       <TextInput
-        label="Biografía"
+        label="Bio"
         value={bio}
         onChangeText={setBio}
         mode="outlined"
@@ -179,7 +196,7 @@ export default function EditProfileScreen({ navigation }) {
       />
 
       <CustomButton
-        title="Guardar cambios"
+        title="Save"
         icon="content-save"
         mode="contained"
         onPress={handleSave}

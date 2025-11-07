@@ -15,7 +15,7 @@ export default function RegisterScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const [formValid, setFormValid] = useState(false);
 
-  const API_URL = 'http://192.168.1.6:1337'; 
+  const API_URL = 'http://192.168.1.8:1337'; 
 
   useEffect(()=>{
      const isValid = Username.trim() !== '' && password.trim() !== '' && email.trim() !='' && password.trim() != '';
@@ -41,21 +41,21 @@ export default function RegisterScreen({ navigation }) {
         password: password,
       });
 
-      console.log('Usuario registrado:', registerRes.data);
+      console.log('user Registrer:', registerRes.data);
 
       const { jwt, user } = registerRes.data;
 
-      //  Guardar el token localmente
+      //  token
       await AsyncStorage.setItem('jwt', jwt);
 
-      // Crear el perfil asociado directamente al usuario autenticado
+      //create profile
       const profileRes = await axios.post(
         `${API_URL}/api/profiles`,
         {
           data: {
             name: name,
             bio: '',
-            user: user.id, //  Asociamos el perfil con el usuario directamente
+            user: user.id, //  user profile
           },
         },
         {

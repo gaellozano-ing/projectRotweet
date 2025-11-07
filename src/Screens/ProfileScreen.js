@@ -8,7 +8,7 @@ import { colors } from '../Styles/GlobalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const API_URL = 'http://192.168.1.6:1337'; // backend
+const API_URL = 'http://192.168.1.8:1337'; // backend
 
 const ProfileScreen = ({ navigation }) => {
   const [profile, setProfile] = useState(null);
@@ -32,7 +32,7 @@ const ProfileScreen = ({ navigation }) => {
         );
 
         const user = userRes.data;
-        console.log(' Usuario con perfil:', user);
+        console.log('User with profile:', user);
 
         const profileData = user.profile; // el perfil asociado
 
@@ -43,8 +43,8 @@ const ProfileScreen = ({ navigation }) => {
 
         // 
         setProfile({
-          name: profileData.name, // nombre del perfil
-          username: `${user.username}`, // username del user
+          name: profileData.name, // profile name
+          username: `${user.username}`, // username
           bio: profileData.bio || '',
           joinDate: new Date(user.createdAt).toLocaleDateString(),
           avatar:
@@ -53,7 +53,7 @@ const ProfileScreen = ({ navigation }) => {
             null,
         });
       } catch (error) {
-        console.log(' Error al obtener perfil:', error.response?.data || error.message);
+        console.log('Error obtaining profile:', error.response?.data || error.message);
       } finally {
         setLoading(false);
       }
@@ -112,7 +112,7 @@ const ProfileScreen = ({ navigation }) => {
           <CustomButton
             mode="contained"
             style={styles.editButton}
-            title="Editar perfil"
+            title="Edit profile"
             onPress={() => navigation.navigate('EditProfile')}
           />
         </View>
