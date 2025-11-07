@@ -11,15 +11,15 @@ export default function HomeScreen({ navigation }) {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem('jwt'); // 🧹 Elimina el token
-      Alert.alert('Sesión cerrada', 'Has cerrado sesión correctamente.');
+      await AsyncStorage.removeItem('jwt'); // delete token
+      Alert.alert('Session closed', 'You have successfully logged out.');
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Login' }], // 👈 Evita volver atrás con el botón del celular
+        routes: [{ name: 'Login' }], //  Avoid going back using the phone's button.
       });
     } catch (error) {
-      console.log('❌ Error al cerrar sesión:', error);
-      Alert.alert('Error', 'No se pudo cerrar sesión.');
+      console.log('Logout error:', error);
+      Alert.alert('Error', 'Could not log out.');
     }
   };
 
@@ -32,12 +32,12 @@ export default function HomeScreen({ navigation }) {
       </Text>
 
       <Text style={[styles.subtitle, globalStyles.paragraph]}>
-        Configuración y opciones del usuario.
+        User settings and options.
       </Text>
 
-      {/* 🔘 Botón de cerrar sesión */}
+      {/* Logout button */}
       <CustomButton
-        title="Cerrar sesión"
+        title="Log out"
         icon="logout"
         mode="contained"
         onPress={handleLogout}

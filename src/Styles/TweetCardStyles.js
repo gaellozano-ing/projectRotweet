@@ -46,6 +46,6 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: spacing.xs,
-    paddingRight: spacing.xl,
+    paddingRight: spacing.md,
   },
 });

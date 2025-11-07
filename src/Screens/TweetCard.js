@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Image } from "react-native";
 import { Card, Text } from "react-native-paper";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons';
 import tweetCardStyles from "../Styles/TweetCardStyles";
 
 const TweetCard = ({ username, content, createdAt, avatar }) => {
@@ -35,18 +35,16 @@ const TweetCard = ({ username, content, createdAt, avatar }) => {
      
         <View style={tweetCardStyles.textContainer}>
           <View style={tweetCardStyles.headerRow}>
-            <Text style={tweetCardStyles.name}>{username || "Anónimo"}</Text>
+            <Text style={tweetCardStyles.name}>{username || "Anonymous"}</Text>
             <Text style={tweetCardStyles.username}> · {formattedDate}</Text>
           </View>
 
-          <Text style={tweetCardStyles.tweetText}>{content || "Sin contenido"}</Text>
+          <Text style={tweetCardStyles.tweetText}>{content || "No content"}</Text>
 
         
           <View style={tweetCardStyles.iconRow}>
-            <Icon name="chat-outline" size={20} color="#657786" />
-            <Icon name="repeat" size={20} color="#657786" />
-            <Icon name="heart-outline" size={20} color="#657786" />
-            <Icon name="share-variant" size={20} color="#657786" />
+            <MaterialDesignIcons name="chat-outline" size={20} color="#657786" />
+            <MaterialDesignIcons name="heart-outline" size={20} color="#657786" />
           </View>
         </View>
       </Card.Content>
