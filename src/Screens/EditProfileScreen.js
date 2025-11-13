@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Alert } from 'react-native';
+import { View, Image, Alert, TouchableOpacity } from 'react-native';
 import { TextInput, Text } from 'react-native-paper';
 import { launchImageLibrary } from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import CustomButton from '../Components/CustomButton';
 import styles from '../Styles/EditProfileStyles';
+import { useNavigation } from '@react-navigation/native';
+import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons';
+import { colors } from '../Styles/GlobalStyles';
 
 const API_URL = 'http://192.168.1.8:1337';
 
-export default function EditProfileScreen({ navigation }) {
+export default function EditProfileScreen() {
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
   const [avatar, setAvatar] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
   // carga
   const loadProfile = async () => {
@@ -164,6 +168,27 @@ export default function EditProfileScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      {/* 🔹 Encabezado con botón y título */}
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingVertical: 15,
+          borderBottomWidth: 1,
+          borderBottomColor: '#ddd',
+          backgroundColor: '#fff',
+          marginBottom: 10,
+        }}
+      >
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10, marginRight: 10 }}>
+          <MaterialDesignIcons name="arrow-left" size={26} color={colors.primary} />
+        </TouchableOpacity>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', color: colors.primary, textAlign:'center' }}>
+          Edit Profile
+        </Text>
+      </View>
+
+      {/* Contenido original */}
       <View style={{ alignItems: 'center', marginVertical: 20 }}>
         <Image
           source={avatar ? { uri: avatar } : require('../assets/img/user.png')}
