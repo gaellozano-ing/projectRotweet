@@ -4,6 +4,7 @@ import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-
 import HomeScreen from '../Screens/HomeScreen';
 import SettingScreen from '../Screens/SettingScreen';
 import ProfileScreen from '../Screens/ProfileScreen';
+import SearchUsersScreen from '../Screens/SearchUsersScreen';
 import { colors } from '../Styles/GlobalStyles';
 
 const Tab = createBottomTabNavigator();
@@ -41,6 +42,16 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen
+        name="Search"
+        component={SearchUsersScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <MaterialDesignIcons name="account-search-outline" color={color} size={28} />
+          ),
+          title: 'Search Profiles'
+        }}
+      />
+      <Tab.Screen
         name="Settings"
         component={SettingScreen}
         options={{
@@ -50,6 +61,8 @@ const TabNavigator = () => {
           title: 'Ajustes'
         }}
       />
+      
+      
     </Tab.Navigator>
   );
 };

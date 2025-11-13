@@ -7,13 +7,15 @@ import CustomButton from "../Components/CustomButton";
 import globalStyles from "../Styles/GlobalStyles";
 import HomeStyles from "../Styles/HomeStyles";
 import TweetCardStyles from "../Styles/TweetCardStyles";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { colors } from '../Styles/GlobalStyles'
 
 const FeedScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const API_URL =
-  "http://192.168.1.8:1337/api/posts?populate[profile][populate][user]=true&populate[profile][populate][avatar]=true&sort=createdAt:desc";
+    "http://192.168.1.8:1337/api/posts?populate[profile][populate][user]=true&populate[profile][populate][avatar]=true&sort=createdAt:desc";
 
   const fetchPosts = async () => {
     try {
@@ -36,25 +38,28 @@ const FeedScreen = ({ navigation }) => {
   };
 
   const renderItem = ({ item }) => {
-    const content = item?.attributes?.content || item.content || "";
-    const profile = item?.attributes?.profile || item.profile;
-    const username = profile?.user?.username || profile?.name || "Anonymous";
-    const avatar = profile?.avatar?.url
-      ? { uri: `http://192.168.1.6:1337${profile.avatar.url}` }
+    const content = item.content || "";
+    const profile = item.profile || {};
+    const name = profile.name || "Usuario";
+    const username = profile.user?.username || "@anon";
+    const createdAt = item.createdAt;
+    const avatar = profile.avatar?.url
+      ? `http://192.168.1.8:1337${profile.avatar.url}`
       : null;
 
     return (
       <TweetCard
-      username={username}
-      content={content}
-      createdAt={item.createdAt}
-      avatar={item.profile?.avatar?.url ? `http://192.168.1.6:1337${item.profile.avatar.url}` : null}
-/>
-
+        name={name}
+        username={username}
+        content={content}
+        createdAt={createdAt}
+        avatar={avatar}
+      />
     );
   };
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
     <View style={globalStyles.container}>
       <View style={HomeStyles.headerContainer}>
         <Image
@@ -67,7 +72,7 @@ const FeedScreen = ({ navigation }) => {
 
       <FlatList
         data={posts}
-        keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
+        keyExtractor={(item) => item.documentId || item.id.toString()}
         renderItem={renderItem}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         ItemSeparatorComponent={() => <View style={TweetCardStyles.separator} />}
@@ -81,6 +86,7 @@ const FeedScreen = ({ navigation }) => {
         style={HomeStyles.floatingButton}
       />
     </View>
+    </SafeAreaView>
   );
 };
 

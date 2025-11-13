@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Alert } from 'react-native';
+import { View, Alert, Image } from 'react-native';
 import { TextInput, Text } from 'react-native-paper';
-import MaterialDesignIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CustomButton from '../Components/CustomButton';
 import globalStyles, { colors } from '../Styles/GlobalStyles';
 import styles from '../Styles/RegisterStyles';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function RegisterScreen({ navigation }) {
   const [Username, setUsername] = useState('');
@@ -34,7 +34,7 @@ export default function RegisterScreen({ navigation }) {
   }
 
     try {
-      // Registrar el usuario en Strapi
+      // registrer
       const registerRes = await axios.post(`${API_URL}/api/auth/local/register`, {
         username: Username,
         email: email,
@@ -79,7 +79,11 @@ export default function RegisterScreen({ navigation }) {
 
   return (
     <View style={[globalStyles.container, globalStyles.centered]}>
-      <MaterialDesignIcons name="twitter" size={80} color={colors.primary} style={styles.icon} />
+       <Image
+              source={require('../assets/img/RotTweetLogo.png')}
+              style={{ width: 120, height: 120, margin: 10 }}
+              resizeMode="contain"
+            />
 
       <Text variant="headlineMedium" style={[styles.title, globalStyles.titleText]}>
         Create account
