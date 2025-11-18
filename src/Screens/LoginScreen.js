@@ -7,12 +7,13 @@ import styles from '../Styles/LoginStyles';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
-const API_URL = 'http://192.168.1.8:1337'; // backend Strapi
+const API_URL = 'http://192.168.1.6:1337'; // backend Strapi
 
 export default function LoginScreen({ navigation }) {
   const [User, setUser] = useState('');
   const [Password, setPassword] = useState('');
   const [formValid, setFormValid] = useState(false);
+  
 
   useEffect(() => {
     const isValid = User.trim() !== '' && Password.trim() !== '';

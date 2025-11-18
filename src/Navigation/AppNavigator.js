@@ -8,6 +8,7 @@ import CreatePost from '../Screens/CreatePostScreen';
 import EditProfileScreen from '../Screens/EditProfileScreen'
 import FollowersScreen from '../Screens/FollowersScreen'
 import FollowingsScreen from '../Screens/FollowingsScreen'
+import CommentsScreen from "../Screens/CommentsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,8 @@ export default function AppNavigator() {
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       <Stack.Screen name="FollowersList" component={FollowersScreen} />
       <Stack.Screen name="FollowingList" component={FollowingsScreen} />
+      <Stack.Screen name="Comments" component={CommentsScreen}
+/>
     </Stack.Navigator>
   );
 }

@@ -57,6 +57,12 @@
       "relation": "manyToMany",
       "target": "api::post.post",
       "mappedBy": "likedBy"
+    },
+    "comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::comment.comment",
+      "mappedBy": "profile"
     }
   }
 }

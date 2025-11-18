@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons';
 
-const API_URL = 'http://192.168.1.8:1337'; // backend
+const API_URL = 'http://192.168.1.6:1337'; // backend
 
 const FollowingsScreen = () => {
   const [followings, setFollowings] = useState([]);

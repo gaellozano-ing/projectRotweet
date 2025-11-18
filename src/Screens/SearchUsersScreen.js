@@ -7,7 +7,7 @@ import axios from 'axios';
 import { colors } from '../Styles/GlobalStyles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const API_URL = 'http://192.168.1.8:1337'; // bakend
+const API_URL = 'http://192.168.1.6:1337'; // bakend
 
 const SearchUsersScreen = () => {
   const [query, setQuery] = useState('');

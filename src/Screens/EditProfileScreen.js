@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons';
 import { colors } from '../Styles/GlobalStyles';
 
-const API_URL = 'http://192.168.1.8:1337';
+const API_URL = 'http://192.168.1.6:1337';
 
 export default function EditProfileScreen() {
   const [name, setName] = useState('');

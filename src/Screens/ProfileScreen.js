@@ -10,7 +10,7 @@ import axios from 'axios';
 import { useFocusEffect } from '@react-navigation/native';
 import TweetCard from './TweetCard';
 
-const API_URL = 'http://192.168.1.8:1337'; // backend 
+const API_URL = 'http://192.168.1.6:1337'; // backend 
 
 const ProfileScreen = ({ navigation }) => {
   const [profile, setProfile] = useState(null);
