@@ -9,12 +9,14 @@ import HomeStyles from "../Styles/HomeStyles";
 import TweetCardStyles from "../Styles/TweetCardStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../Styles/GlobalStyles";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_URL = "http://192.168.1.6:1337";
 
 const FeedScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [currentUserProfile, setCurrentUserProfile] = useState(null);
 
   const fetchPosts = async () => {
     try {
@@ -33,15 +35,35 @@ const FeedScreen = ({ navigation }) => {
     fetchPosts();
   }, []);
 
+ useEffect(() => {
+  const loadProfile = async () => {
+    const saved = await AsyncStorage.getItem('profile');
+    console.log("📌 RAW profile desde AsyncStorage:", saved);
+
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      console.log("📌 Profile parseado:", parsed);
+      setCurrentUserProfile(parsed);
+    } else {
+      console.log("❌ No hay profile guardado");
+    }
+  };
+
+  loadProfile();
+}, []);
+
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchPosts();
     setRefreshing(false);
   };
 
-  const openComments = (post) => {
-    navigation.navigate("Comments", { post });
-  };
+ const openComments = (post) => {
+  navigation.navigate("Comments", { 
+    post,
+    currentUserProfile  // ❤️ ahora sí lo envías
+  });
+};
 
   const renderItem = ({ item }) => {
     const content = item.content || "";

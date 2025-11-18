@@ -11,9 +11,10 @@ export default StyleSheet.create({
     borderColor: colors.lightGray,
   },
 
+  // === CONTENEDOR ROW (avatar + contenido)
   header: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     marginBottom: spacing.sm,
   },
 
@@ -33,26 +34,39 @@ export default StyleSheet.create({
     marginRight: spacing.sm,
   },
 
+  textContainer: {
+    flex: 1,
+  },
+
+  // === NUEVA LÍNEA: nombre + @username + fecha ===
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "nowrap",
+  },
+
   name: {
     fontSize: fontSizes.medium,
     fontWeight: "600",
     color: colors.text,
+    marginRight: 4,
   },
 
   username: {
     fontSize: fontSizes.small,
     color: colors.darkGray,
+    marginRight: 4,
   },
 
-  content: {
+  date: {
+    fontSize: fontSizes.small,
+    color: colors.gray,
+  },
+
+  // === TEXTO DEL COMENTARIO ===
+  commentText: {
     marginTop: spacing.xs,
     fontSize: fontSizes.medium,
     color: colors.text,
-  },
-
-  time: {
-    marginTop: spacing.sm,
-    fontSize: fontSizes.small,
-    color: colors.gray,
   },
 });

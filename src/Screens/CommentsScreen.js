@@ -18,17 +18,16 @@ const CommentsScreen = ({ route }) => {
   // FETCH COMMENTS
   // =========================
   const fetchComments = async () => {
-    try {
-      const response = await axios.get(
-        `${API_URL}/api/comments?filters[post][documentId][$eq]=${post.documentId}&populate[profile][populate]=avatar&sort=createdAt:asc`
-      );
+  try {
+    const response = await axios.get(
+      `${API_URL}/api/comments?filters[post][documentId][$eq]=${post.documentId}&populate[profile][populate][user]=true&populate[profile][populate][avatar]=true&sort=createdAt:asc`
+    );
 
-      setComments(response.data.data || []);
-    } catch (error) {
-      console.error("Error fetching comments:", error.response?.data || error.message);
-    }
-  };
-
+    setComments(response.data.data || []);
+  } catch (error) {
+    console.error("Error fetching comments:", error.response?.data || error.message);
+  }
+};
   useEffect(() => {
     fetchComments();
   }, []);
@@ -36,25 +35,37 @@ const CommentsScreen = ({ route }) => {
   // =========================
   // SEND COMMENT
   // =========================
-const submitComment = async () => {
-  if (!text.trim()) return;
-
+const handleSendComment = async () => {
   try {
-    await axios.post(`${API_URL}/api/comments`, {
+    console.log("=== ENVIANDO COMENTARIO ===");
+    console.log("Texto:", text);  // 👈 FIX
+    console.log("post.id:", post.id);
+    console.log("currentUserProfile.id:", currentUserProfile?.id);
+
+    if (!currentUserProfile || !currentUserProfile.id) {
+      console.log("❌ currentUserProfile está vacío, NO puedo enviar comentario");
+      return;
+    }
+
+    const res = await axios.post(`${API_URL}/api/comments`, {
       data: {
-        Text: text,          // ← CORRECTO: T mayúscula
-        post: post.documentId,
-        profile: currentUserProfile,
-      },
+        Text: text,              // 👈 FIX
+        post: post.id,
+        profile: currentUserProfile.id,
+      }
     });
 
-    setText("");
-    fetchComments(); // recargar
+    console.log("✔️ Comentario enviado:", res.data);
+
+    setText("");               // 👈 FIX
+    fetchComments();
+
   } catch (error) {
-    console.error("Error sending comment:", error.response?.data || error.message);
+    console.log("❌ ERROR AL ENVIAR COMENTARIO:");
+    console.log("Error completo:", error);
+    console.log("Error response:", error.response?.data);
   }
 };
-
   // =========================
   // RENDER COMMENT WITH COMMENTCARD ❤️
   // =========================
@@ -146,7 +157,7 @@ const renderItem = ({ item }) => {
         />
 
         <TouchableOpacity
-          onPress={submitComment}
+          onPress={handleSendComment}
           style={{
             backgroundColor: colors.primary,
             paddingVertical: 12,
