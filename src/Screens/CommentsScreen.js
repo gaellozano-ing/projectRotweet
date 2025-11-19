@@ -13,92 +13,90 @@ const CommentsScreen = ({ route }) => {
   const { post, currentUserProfile } = route.params;
   const [comments, setComments] = useState([]);
   const [text, setText] = useState("");
+  const [canSend, setCanSend] = useState(false);
 
-  // =========================
-  // FETCH COMMENTS
-  // =========================
+  useEffect(() => {
+    setCanSend(text.trim().length > 0);
+  }, [text]);
+
   const fetchComments = async () => {
-  try {
-    const response = await axios.get(
-      `${API_URL}/api/comments?filters[post][documentId][$eq]=${post.documentId}&populate[profile][populate][user]=true&populate[profile][populate][avatar]=true&sort=createdAt:asc`
-    );
+    try {
+      const response = await axios.get(
+        `${API_URL}/api/comments?filters[post][documentId][$eq]=${post.documentId}&populate[profile][populate][user]=true&populate[profile][populate][avatar]=true&sort=createdAt:asc`
+      );
 
-    setComments(response.data.data || []);
-  } catch (error) {
-    console.error("Error fetching comments:", error.response?.data || error.message);
-  }
-};
+      setComments(response.data.data || []);
+    } catch (error) {
+      console.error("Error fetching comments:", error.response?.data || error.message);
+    }
+  };
+
   useEffect(() => {
     fetchComments();
   }, []);
 
-  // =========================
-  // SEND COMMENT
-  // =========================
-const handleSendComment = async () => {
-  try {
-  
+  const handleSendComment = async () => {
+    try {
+      if (!canSend) return;
 
-    if (!currentUserProfile || !currentUserProfile.id) {
-      console.log(" currentUserProfile is empty, I cannot submit a comment");
-      return;
-    }
-
-    const res = await axios.post(`${API_URL}/api/comments`, {
-      data: {
-        Text: text,              
-        post: post.id,
-        profile: currentUserProfile.id,
+      if (!currentUserProfile || !currentUserProfile.id) {
+        console.log("currentUserProfile is empty, cannot submit a comment");
+        return;
       }
-    });
 
-    console.log("✔️ Comentario enviado:", res.data);
+      const res = await axios.post(`${API_URL}/api/comments`, {
+        data: {
+          Text: text,
+          post: post.id,
+          profile: currentUserProfile.id,
+        },
+      });
 
-    setText("");               
-    fetchComments();
+      console.log("Comment sent:", res.data);
 
-  } catch (error) {
-    console.log("ERROR SUBMITTING COMMENT:");
-    console.log("Error complete:", error);
-    console.log("Error response:", error.response?.data);
-  }
-};
-  
-const renderItem = ({ item }) => {
-  const data = item.attributes || item;
+      setText("");
+      fetchComments();
+    } catch (error) {
+      console.log("Error submitting comment:", error);
+    }
+  };
 
-  const profile = data.profile?.data?.attributes || data.profile || {};
-  const avatarUrl =
-    profile.avatar?.data?.attributes?.url
-      ? `${API_URL}${profile.avatar.data.attributes.url}`
-      : profile.avatar?.url
-      ? `${API_URL}${profile.avatar.url}`
-      : null;
+  const renderItem = ({ item }) => {
+    const data = item.attributes || item;
 
-  const name = profile.name || "User";
-  const username = profile.user?.username || "@anon";
+    const profile = data.profile?.data?.attributes || data.profile || {};
+    const avatarUrl =
+      profile.avatar?.data?.attributes?.url
+        ? `${API_URL}${profile.avatar.data.attributes.url}`
+        : profile.avatar?.url
+        ? `${API_URL}${profile.avatar.url}`
+        : null;
 
- 
-  const content =
-    data.Text !== undefined ? data.Text :      
-    data.text !== undefined ? data.text :
-    data.comment !== undefined ? data.comment :
-    data.content !== undefined ? data.content :
-    "";
+    const name = profile.name || "User";
+    const username = profile.user?.username || "@anon";
 
-  return (
-    <CommentCard
-      name={name}
-      username={username}
-      avatar={avatarUrl}
-      content={content}
-      createdAt={data.createdAt}
-    />
-  );
-};
-  // =========================
-  // TWEETCARD VALUES
-  // =========================
+    const content =
+      data.Text !== undefined
+        ? data.Text
+        : data.text !== undefined
+        ? data.text
+        : data.comment !== undefined
+        ? data.comment
+        : data.content !== undefined
+        ? data.content
+        : "";
+
+    return (
+      <CommentCard
+        name={name}
+        username={username}
+        avatar={avatarUrl}
+        content={content}
+        createdAt={data.createdAt}
+      />
+    );
+  };
+
   const profile = post.profile || {};
   const name = profile.name || "User";
   const username = profile.user?.username || "@anon";
@@ -107,8 +105,6 @@ const renderItem = ({ item }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
-      
-     
       <TweetCard
         name={name}
         username={username}
@@ -118,7 +114,6 @@ const renderItem = ({ item }) => {
         image={image}
       />
 
-    
       <FlatList
         data={comments}
         keyExtractor={(item) => item.documentId}
@@ -126,7 +121,6 @@ const renderItem = ({ item }) => {
         contentContainerStyle={{ padding: 16, paddingBottom: 130 }}
       />
 
-    
       <View
         style={{
           flexDirection: "row",
@@ -153,8 +147,9 @@ const renderItem = ({ item }) => {
 
         <TouchableOpacity
           onPress={handleSendComment}
+          disabled={!canSend}
           style={{
-            backgroundColor: colors.primary,
+            backgroundColor: canSend ? colors.primary : colors.darkGray,
             paddingVertical: 12,
             paddingHorizontal: 20,
             borderRadius: 12,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Alert } from 'react-native';
+import { View, Image, Alert } from 'react-native';
 import { Text } from 'react-native-paper';
 import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,11 +11,11 @@ export default function HomeScreen({ navigation }) {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem('jwt'); // delete token
+      await AsyncStorage.removeItem('jwt'); 
       Alert.alert('Session closed', 'You have successfully logged out.');
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Login' }], //  Avoid going back using the phone's button.
+        routes: [{ name: 'Login' }],
       });
     } catch (error) {
       console.log('Logout error:', error);
@@ -25,17 +25,28 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <MaterialDesignIcons name="twitter" size={60} color={colors.primary} style={styles.icon} />
 
-      <Text variant="headlineMedium" style={[styles.title, globalStyles.titleText]}>
-        ¡welcome a X!
+      {/* 🔹 Logo RotTweet */}
+      <Image
+        source={require("../assets/img/RotTweetLogo.png")}
+        style={{ width: 80, height: 80, marginBottom: 10 }}
+        resizeMode="contain"
+      />
+
+      {/* 🔹 Título */}
+      <Text 
+        variant="headlineMedium" 
+        style={[styles.title, globalStyles.titleText]}
+      >
+        Welcome to <Text style={{ color: colors.primary }}>RotTweet</Text>!
       </Text>
 
+      {/* 🔹 Subtítulo */}
       <Text style={[styles.subtitle, globalStyles.paragraph]}>
         User settings and options.
       </Text>
 
-      {/* Logout button */}
+      {/* 🔹 Botón Logout */}
       <CustomButton
         title="Log out"
         icon="logout"
@@ -46,4 +57,3 @@ export default function HomeScreen({ navigation }) {
     </View>
   );
 }
-
