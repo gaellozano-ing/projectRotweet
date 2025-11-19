@@ -1,36 +1,71 @@
-import React, { useState } from "react";
-import { View, TextInput, Alert, TouchableOpacity } from "react-native";
-import { Text } from "react-native-paper";
-import axios from "axios";
-import globalStyles from "../Styles/GlobalStyles";
-import CreatePostStyles from "../Styles/CreatePostStyles";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, Alert, TouchableOpacity, Image } from 'react-native';
+import { Text } from 'react-native-paper';
+import axios from 'axios';
+import { launchImageLibrary } from 'react-native-image-picker';
+import globalStyles from '../Styles/GlobalStyles';
+import CreatePostStyles from '../Styles/CreatePostStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const CreatePostScreen = () => {
-  const [content, setContent] = useState("");
+const CreatePostScreen = ({ navigation }) => {
+  const [content, setContent] = useState('');
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-const handlePost = async () => {
-    if (content.trim() === "") {
-      Alert.alert("Error", "Post content cannot be empty.");
+  useEffect(() => {
+    if (content.length > 280) {
+      setContent(content.slice(0, 280));
+      Alert.alert('Limit reached', 'Maximum 280 characters allowed.');
+    }
+  }, [content]);
+
+  const pickImage = () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        quality: 0.8,
+      },
+      response => {
+        if (response.didCancel) return;
+
+        if (response.errorMessage) {
+          Alert.alert('Error', response.errorMessage);
+          return;
+        }
+
+        if (response.assets && response.assets.length > 0) {
+          const img = response.assets[0];
+          setImage(img);
+        }
+      },
+    );
+  };
+
+  const removeImage = () => {
+    setImage(null);
+  };
+
+  const handlePost = async () => {
+    if (content.trim() === '') {
+      Alert.alert('Error', 'Post content cannot be empty.');
       return;
     }
 
     setLoading(true);
 
     try {
-      const token = await AsyncStorage.getItem("jwt");
-      const userData = await AsyncStorage.getItem("user");
+      const token = await AsyncStorage.getItem('jwt');
+      const userData = await AsyncStorage.getItem('user');
       const user = userData ? JSON.parse(userData) : null;
 
       if (!token || !user) {
-        Alert.alert("Error", "Session expired. Please log in again.");
+        Alert.alert('Error', 'Session expired. Please log in again.');
         setLoading(false);
         return;
       }
 
-      const response = await axios.post(
-        "http://192.168.1.8:1337/api/posts",
+      const postResponse = await axios.post(
+        'http://192.168.1.6:1337/api/posts',
         {
           data: {
             content: content,
@@ -38,21 +73,54 @@ const handlePost = async () => {
           },
         },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+          headers: { Authorization: `Bearer ${token}` },
+        },
       );
 
-      Alert.alert("Success", "Your post has been created successfully!");
-      setContent("");
+      const newPostId = postResponse.data?.data?.id;
+
+      if (image) {
+        const formData = new FormData();
+
+        formData.append('files', {
+          uri: image.uri,
+          name: 'post_image.jpg',
+          type: image.type || 'image/jpeg',
+        });
+
+        formData.append('ref', 'api::post.post');
+        formData.append('refId', newPostId);
+        formData.append('field', 'image');
+
+        await axios.post('http://192.168.1.6:1337/api/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+
+      Alert.alert('Success', 'Your post has been created!', [
+        {
+          text: 'OK',
+          onPress: () => {
+            setContent('');
+            setImage(null);
+            navigation.goBack();
+          },
+        },
+      ]);
     } catch (error) {
-      console.error(" Error creating post:", error.response?.data || error.message);
-      Alert.alert("Error", "There was a problem creating your post.");
+      console.error(
+        'Error creating post:',
+        error.response?.data || error.message,
+      );
+      Alert.alert('Error', 'There was a problem creating your post.');
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <View style={[globalStyles.container, CreatePostStyles.container]}>
       <Text style={[globalStyles.titleText, CreatePostStyles.title]}>
@@ -67,13 +135,51 @@ const handlePost = async () => {
         style={CreatePostStyles.input}
       />
 
+      <Text style={CreatePostStyles.counterText}>{content.length}/280</Text>
+
+      {image && (
+        <View style={{ marginBottom: 15 }}>
+          <Image
+            source={{ uri: image.uri }}
+            style={{
+              width: '100%',
+              height: 200,
+              borderRadius: 12,
+              marginBottom: 10,
+            }}
+          />
+
+          <TouchableOpacity
+            style={[
+              CreatePostStyles.button,
+              { backgroundColor: '#ff6b6b', marginBottom: 15 },
+            ]}
+            onPress={removeImage}
+          >
+            <Text style={CreatePostStyles.buttonText}>Remove Image</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <TouchableOpacity
+        style={[
+          CreatePostStyles.button,
+          { backgroundColor: '#ff6b6b', marginBottom: 20 },
+        ]}
+        onPress={pickImage}
+      >
+        <Text style={[CreatePostStyles.buttonText, { color: 'black' }]}>
+          Add Image
+        </Text>
+      </TouchableOpacity>
+
       <TouchableOpacity
         style={CreatePostStyles.button}
         onPress={handlePost}
         disabled={loading}
       >
         <Text style={CreatePostStyles.buttonText}>
-          {loading ? "Posting..." : "Post"}
+          {loading ? 'Posting...' : 'Post'}
         </Text>
       </TouchableOpacity>
     </View>

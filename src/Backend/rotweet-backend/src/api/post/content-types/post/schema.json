@@ -36,6 +36,12 @@
       "relation": "manyToMany",
       "target": "api::profile.profile",
       "inversedBy": "likedPosts"
+    },
+    "comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::comment.comment",
+      "mappedBy": "post"
     }
   }
 }

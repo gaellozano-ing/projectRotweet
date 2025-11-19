@@ -7,12 +7,13 @@ import styles from '../Styles/LoginStyles';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
-const API_URL = 'http://192.168.1.8:1337'; // backend Strapi
+const API_URL = 'http://192.168.1.6:1337'; // backend Strapi
 
 export default function LoginScreen({ navigation }) {
   const [User, setUser] = useState('');
   const [Password, setPassword] = useState('');
   const [formValid, setFormValid] = useState(false);
+  
 
   useEffect(() => {
     const isValid = User.trim() !== '' && Password.trim() !== '';
@@ -20,40 +21,50 @@ export default function LoginScreen({ navigation }) {
   }, [User, Password]);
 
   const handleSave = async () => {
-    if (!formValid) {
-      Alert.alert('Error', 'Please complete all fields.', [{ text: 'OK' }]);
-      return;
-    }
+  if (!formValid) {
+    Alert.alert('Error', 'Please complete all fields.', [{ text: 'OK' }]);
+    return;
+  }
 
-    try {
-      
-      const response = await axios.post(`${API_URL}/api/auth/local`, {
-        identifier: User, 
-        password: Password,
-      });
+  try {
+    const response = await axios.post(`${API_URL}/api/auth/local`, {
+      identifier: User,
+      password: Password,
+    });
 
-      const { jwt, user } = response.data;
+    const { jwt, user } = response.data;
 
-      
-      await AsyncStorage.setItem('jwt', jwt);
-      await AsyncStorage.setItem('user', JSON.stringify(user));
+    // GUARDAR JWT Y USER
+    await AsyncStorage.setItem('jwt', jwt);
+    await AsyncStorage.setItem('user', JSON.stringify(user));
 
-      Alert.alert('Welcome', `Hola ${user.username}!`);
-      console.log('Token saved:', jwt);
+    // ======================================
+    // 1️⃣ OBTENER EL PROFILE DEL USUARIO
+    // ======================================
+    const profileRes = await axios.get(
+      `${API_URL}/api/profiles?filters[user][id][$eq]=${user.id}&populate=avatar`
+    );
 
-      
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Home' }],
-      });
-    } catch (error) {
-      console.error('Login error:', error.response?.data || error.message);
-      Alert.alert(
-        'Error',
-        error.response?.data?.error?.message || 'Incorrect username or password.'
-      );
-    }
-  };
+    const profile = profileRes.data.data[0];
+
+    // Guardar profile completo
+    await AsyncStorage.setItem('profile', JSON.stringify(profile));
+
+    Alert.alert('Welcome', `Hola ${user.username}!`);
+
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Home' }],
+    });
+
+  } catch (error) {
+    console.error('Login error:', error.response?.data || error.message);
+    Alert.alert(
+      'Error',
+      error.response?.data?.error?.message || 'Incorrect username or password.'
+    );
+  }
+};
 
   return (
     <View style={[globalStyles.container, globalStyles.centered]}>

@@ -16,7 +16,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const API_URL = 'http://192.168.1.8:1337'; // backend
+const API_URL = 'http://192.168.1.6:1337'; // backend
 
 const FollowersScreen = () => {
   const [followers, setFollowers] = useState([]);
