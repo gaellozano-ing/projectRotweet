@@ -38,14 +38,14 @@ const FeedScreen = ({ navigation }) => {
  useEffect(() => {
   const loadProfile = async () => {
     const saved = await AsyncStorage.getItem('profile');
-    console.log("📌 RAW profile desde AsyncStorage:", saved);
+    console.log(" RAW profile where AsyncStorage:", saved);
 
     if (saved) {
       const parsed = JSON.parse(saved);
-      console.log("📌 Profile parseado:", parsed);
+      console.log(" Profile parsed:", parsed);
       setCurrentUserProfile(parsed);
     } else {
-      console.log("❌ No hay profile guardado");
+      console.log(" There is no profile saved");
     }
   };
 
@@ -61,7 +61,7 @@ const FeedScreen = ({ navigation }) => {
  const openComments = (post) => {
   navigation.navigate("Comments", { 
     post,
-    currentUserProfile  // ❤️ ahora sí lo envías
+    currentUserProfile  
   });
 };
 
@@ -72,18 +72,18 @@ const FeedScreen = ({ navigation }) => {
     const username = profile.user?.username || "@anon";
     const createdAt = item.createdAt;
 
-    // Avatar
+    
     const avatar = profile.avatar?.url
       ? `${API_URL}${profile.avatar.url}`
       : null;
 
-    // Imagen del post
+    
     const image = item.image || null;
 
     return (
       <TouchableOpacity
         activeOpacity={0.8}
-        onPress={() => openComments(item)}   // ⭐ ABRE COMENTARIOS
+        onPress={() => openComments(item)}  
       >
         <TweetCard
           name={name}
@@ -92,7 +92,7 @@ const FeedScreen = ({ navigation }) => {
           createdAt={createdAt}
           avatar={avatar}
           image={image}
-          onCommentPress={() => openComments(item)} // ⭐ DESDE ICONO DE COMENTARIO
+          onCommentPress={() => openComments(item)} 
         />
       </TouchableOpacity>
     );
@@ -102,17 +102,17 @@ const FeedScreen = ({ navigation }) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       <View style={globalStyles.container}>
         
-        {/* HEADER */}
+       
         <View style={HomeStyles.headerContainer}>
           <Image
             source={require("../assets/img/RotTweetLogo.png")}
             style={HomeStyles.logo}
             resizeMode="contain"
           />
-          <Text style={HomeStyles.headerText}>Inicio</Text>
+          <Text style={HomeStyles.headerText}>Welcome</Text>
         </View>
 
-        {/* FEED */}
+       
         <FlatList
           data={posts}
           keyExtractor={(item) => item.documentId || item.id.toString()}
@@ -130,8 +130,6 @@ const FeedScreen = ({ navigation }) => {
           }
           showsVerticalScrollIndicator={false}
         />
-
-        {/* BOTÓN FLOTANTE */}
         <CustomButton
           icon="feather"
           onPress={() => navigation.navigate("CreatePost")}

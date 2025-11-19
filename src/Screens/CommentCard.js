@@ -6,7 +6,7 @@ import commentCardStyles from "../Styles/CommentCardStyles"
 const API_URL = "http://192.168.1.6:1337";
 
 const CommentCard = ({ name, username, avatar, content, createdAt }) => {
-  // Fecha formateada igual que TweetCard
+ 
   const formattedDate = createdAt
     ? new Date(createdAt).toLocaleDateString("es-ES", {
         day: "numeric",
@@ -14,7 +14,7 @@ const CommentCard = ({ name, username, avatar, content, createdAt }) => {
       })
     : "";
 
-  // Avatar mismo sistema que TweetCard
+
   const avatarSource = avatar
     ? typeof avatar === "string"
       ? { uri: avatar }
@@ -25,7 +25,7 @@ const CommentCard = ({ name, username, avatar, content, createdAt }) => {
     <Card style={commentCardStyles.card}>
       <Card.Content style={commentCardStyles.contentRow}>
         
-        {/* Avatar */}
+      
         <Image
           source={avatarSource}
           style={commentCardStyles.avatar}
@@ -33,7 +33,7 @@ const CommentCard = ({ name, username, avatar, content, createdAt }) => {
 
         <View style={commentCardStyles.textContainer}>
           
-          {/* Header: nombre + username + fecha */}
+       
           <View style={commentCardStyles.headerRow}>
             <Text style={commentCardStyles.name}>{name}</Text>
             <Text style={commentCardStyles.username}>
@@ -42,9 +42,9 @@ const CommentCard = ({ name, username, avatar, content, createdAt }) => {
             </Text>
           </View>
 
-          {/* Texto del comentario */}
+        
           <Text style={commentCardStyles.commentText}>
-            {content || "Comentario vacío"}
+            {content || "Empty comment"}
           </Text>
 
         </View>

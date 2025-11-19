@@ -37,19 +37,16 @@ const CommentsScreen = ({ route }) => {
   // =========================
 const handleSendComment = async () => {
   try {
-    console.log("=== ENVIANDO COMENTARIO ===");
-    console.log("Texto:", text);  // 👈 FIX
-    console.log("post.id:", post.id);
-    console.log("currentUserProfile.id:", currentUserProfile?.id);
+  
 
     if (!currentUserProfile || !currentUserProfile.id) {
-      console.log("❌ currentUserProfile está vacío, NO puedo enviar comentario");
+      console.log(" currentUserProfile is empty, I cannot submit a comment");
       return;
     }
 
     const res = await axios.post(`${API_URL}/api/comments`, {
       data: {
-        Text: text,              // 👈 FIX
+        Text: text,              
         post: post.id,
         profile: currentUserProfile.id,
       }
@@ -57,20 +54,18 @@ const handleSendComment = async () => {
 
     console.log("✔️ Comentario enviado:", res.data);
 
-    setText("");               // 👈 FIX
+    setText("");               
     fetchComments();
 
   } catch (error) {
-    console.log("❌ ERROR AL ENVIAR COMENTARIO:");
-    console.log("Error completo:", error);
+    console.log("ERROR SUBMITTING COMMENT:");
+    console.log("Error complete:", error);
     console.log("Error response:", error.response?.data);
   }
 };
-  // =========================
-  // RENDER COMMENT WITH COMMENTCARD ❤️
-  // =========================
+  
 const renderItem = ({ item }) => {
-  const data = item.attributes || item; // Strapi v4 support
+  const data = item.attributes || item;
 
   const profile = data.profile?.data?.attributes || data.profile || {};
   const avatarUrl =
@@ -83,9 +78,9 @@ const renderItem = ({ item }) => {
   const name = profile.name || "User";
   const username = profile.user?.username || "@anon";
 
-  // 👇 AQUI VIENE LA SOLUCIÓN
+ 
   const content =
-    data.Text !== undefined ? data.Text :      // <--- ESTA ES LA CLAVE
+    data.Text !== undefined ? data.Text :      
     data.text !== undefined ? data.text :
     data.comment !== undefined ? data.comment :
     data.content !== undefined ? data.content :
@@ -105,7 +100,7 @@ const renderItem = ({ item }) => {
   // TWEETCARD VALUES
   // =========================
   const profile = post.profile || {};
-  const name = profile.name || "Usuario";
+  const name = profile.name || "User";
   const username = profile.user?.username || "@anon";
   const avatar = profile.avatar?.url ? `${API_URL}${profile.avatar.url}` : null;
   const image = post.image || null;
@@ -113,7 +108,7 @@ const renderItem = ({ item }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       
-      {/* POST PRINCIPAL */}
+     
       <TweetCard
         name={name}
         username={username}
@@ -123,7 +118,7 @@ const renderItem = ({ item }) => {
         image={image}
       />
 
-      {/* LISTA DE COMENTARIOS */}
+    
       <FlatList
         data={comments}
         keyExtractor={(item) => item.documentId}
@@ -131,7 +126,7 @@ const renderItem = ({ item }) => {
         contentContainerStyle={{ padding: 16, paddingBottom: 130 }}
       />
 
-      {/* INPUT */}
+    
       <View
         style={{
           flexDirection: "row",
@@ -144,7 +139,7 @@ const renderItem = ({ item }) => {
         <TextInput
           value={text}
           onChangeText={setText}
-          placeholder="Escribe un comentario..."
+          placeholder="Write a comment..."
           placeholderTextColor={colors.darkGray}
           style={{
             flex: 1,
@@ -165,7 +160,7 @@ const renderItem = ({ item }) => {
             borderRadius: 12,
           }}
         >
-          <Text style={{ color: "white", fontWeight: "bold" }}>Enviar</Text>
+          <Text style={{ color: "white", fontWeight: "bold" }}>Send</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

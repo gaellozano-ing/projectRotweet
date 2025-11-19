@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, ImageBackground, ActivityIndicator, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
+import {View,ImageBackground,ActivityIndicator,TouchableOpacity,FlatList,RefreshControl,} from 'react-native';
 import { Text, Avatar } from 'react-native-paper';
 import { MaterialDesignIcons } from '@react-native-vector-icons/material-design-icons';
 import styles from '../Styles/ProfileStyles';
@@ -10,7 +10,7 @@ import axios from 'axios';
 import { useFocusEffect } from '@react-navigation/native';
 import TweetCard from './TweetCard';
 
-const API_URL = 'http://192.168.1.6:1337'; // backend 
+const API_URL = 'http://192.168.1.6:1337'; // backend
 
 const ProfileScreen = ({ navigation }) => {
   const [profile, setProfile] = useState(null);
@@ -18,7 +18,7 @@ const ProfileScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  // get profile  and posts
+
   const fetchProfile = async () => {
     try {
       const token = await AsyncStorage.getItem('jwt');
@@ -27,12 +27,12 @@ const ProfileScreen = ({ navigation }) => {
         return;
       }
 
-      // get profile
+     
       const userRes = await axios.get(
         `${API_URL}/api/users/me?populate[profile][populate][avatar]=*&populate[profile][populate][followers]=*&populate[profile][populate][followings]=*`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       const user = userRes.data;
@@ -60,12 +60,15 @@ const ProfileScreen = ({ navigation }) => {
       // get post
       const postsRes = await axios.get(
         `${API_URL}/api/posts?filters[profile][documentId][$eq]=${profileData.documentId}&populate[profile][populate][user]=true&populate[profile][populate][avatar]=true&sort=createdAt:desc`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
       setPosts(postsRes.data.data || []);
     } catch (error) {
-      console.log('Error retrieving profile or posts:', error.response?.data || error.message);
+      console.log(
+        'Error retrieving profile or posts:',
+        error.response?.data || error.message,
+      );
     } finally {
       setLoading(false);
     }
@@ -75,7 +78,7 @@ const ProfileScreen = ({ navigation }) => {
     useCallback(() => {
       setLoading(true);
       fetchProfile();
-    }, [])
+    }, []),
   );
 
   const onRefresh = useCallback(() => {
@@ -85,7 +88,12 @@ const ProfileScreen = ({ navigation }) => {
 
   if (loading) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+      <View
+        style={[
+          styles.container,
+          { justifyContent: 'center', alignItems: 'center' },
+        ]}
+      >
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
@@ -93,7 +101,12 @@ const ProfileScreen = ({ navigation }) => {
 
   if (!profile) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+      <View
+        style={[
+          styles.container,
+          { justifyContent: 'center', alignItems: 'center' },
+        ]}
+      >
         <Text>No profile information was found</Text>
       </View>
     );
@@ -113,7 +126,12 @@ const ProfileScreen = ({ navigation }) => {
             onPress={() => navigation.goBack()}
           />
           <View style={styles.headerRightButtons}>
-            <MaterialDesignIcons name="magnify" size={24} color="white" style={styles.headerIcon} />
+            <MaterialDesignIcons
+              name="magnify"
+              size={24}
+              color="white"
+              style={styles.headerIcon}
+            />
             <MaterialDesignIcons name="dots-vertical" size={24} color="white" />
           </View>
         </View>
@@ -142,8 +160,12 @@ const ProfileScreen = ({ navigation }) => {
         <Text style={styles.username}>{profile.username}</Text>
         <Text style={styles.bio}>{profile.bio}</Text>
         <Text style={styles.joinDate}>
-          <MaterialDesignIcons name="calendar-month" size={16} color={colors.darkGray} /> joined in{' '}
-          {profile.joinDate}
+          <MaterialDesignIcons
+            name="calendar-month"
+            size={16}
+            color={colors.darkGray}
+          />{' '}
+          joined in {profile.joinDate}
         </Text>
 
         {/* 🔹 Contadores de seguidores / seguidos */}
@@ -160,7 +182,9 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.navigate('FollowingList')}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('FollowingList')}
+          >
             <Text style={{ color: colors.darkGray }}>
               <Text style={{ fontWeight: 'bold', color: colors.text }}>
                 {profile.followingsCount}
@@ -174,13 +198,15 @@ const ProfileScreen = ({ navigation }) => {
       {/* list post from user */}
       <FlatList
         data={posts}
-        keyExtractor={(item) => item.documentId || item.id.toString()}
+        keyExtractor={item => item.documentId || item.id.toString()}
         renderItem={({ item }) => {
           const post = item;
           const profile = post.profile || {};
           const name = profile.name || 'Usuario';
           const username = profile.user?.username || '@anon';
-          const avatar = profile.avatar?.url ? `${API_URL}${profile.avatar.url}` : null;
+          const avatar = profile.avatar?.url
+            ? `${API_URL}${profile.avatar.url}`
+            : null;
 
           return (
             <TweetCard
@@ -192,7 +218,9 @@ const ProfileScreen = ({ navigation }) => {
             />
           );
         }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         contentContainerStyle={{ paddingBottom: 80 }}
         ListEmptyComponent={
           <Text style={{ textAlign: 'center', marginVertical: 20 }}>
